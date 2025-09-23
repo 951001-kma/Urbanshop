@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # MongoDB
+  mongodb:
+    image: mongo:6.0
+    container_name: urbanshop-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongodb/init.js:/docker-entrypoint-initdb.d/init.js:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: urbanshop
+    networks:
+      - urban-network
+
+  # Backend
+  backend:
+    build: ./backend
+    container_name: urbanshop-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_URI=mongodb://admin:admin123@mongodb:27017/urbanshop?authSource=admin
+      - JWT_SECRET=urban_jwt_secret_2024
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+    networks:
+      - urban-network
+    restart: unless-stopped
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+
+  # Frontend
+  frontend:
+    build: ./frontend
+    container_name: urbanshop-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - urban-network
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+
+networks:
+  urban-network:
+    driver: bridge
