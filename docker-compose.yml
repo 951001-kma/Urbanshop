@@ -14,8 +14,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - MONGODB_URI=mongodb://mongodb:27017/urbanshop
-      - PORT=3000
+      MONGODB_URI: "mongodb://mongodb:27017/urbanshop"
+      PORT: "3000"
     depends_on:
       - mongodb
     restart: unless-stopped
