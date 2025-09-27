@@ -21,8 +21,14 @@ class UserManager {
         const userData = {
             name: formData.get('name'),
             email: formData.get('email'),
-            age: parseInt(formData.get('age')) || 0
+            password: formData.get('password')
         };
+
+        // Validación básica del password
+        if (!userData.password || userData.password.length < 6) {
+            this.showError('La contraseña debe tener al menos 6 caracteres');
+            return;
+        }
 
         try {
             await this.createUser(userData);
@@ -78,7 +84,6 @@ class UserManager {
             <div class="user-card" data-user-id="${user._id}">
                 <h3>${user.name}</h3>
                 <p><strong>Email:</strong> ${user.email}</p>
-                <p><strong>Edad:</strong> ${user.age}</p>
                 <p><strong>Registrado:</strong> ${new Date(user.createdAt).toLocaleDateString()}</p>
                 <div class="user-actions">
                     <button class="btn-edit" onclick="userManager.editUser('${user._id}')">Editar</button>

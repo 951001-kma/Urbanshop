@@ -12,8 +12,8 @@ const userSchema = new mongoose.Schema({
         unique: true,
         lowercase: true
     },
-    age: {
-        type: Number,
+    password: {
+        type: String,
         min: 0
     },
     createdAt: {
