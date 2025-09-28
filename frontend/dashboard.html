@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard - Sistema Urbanshop</title>
+  <link rel="stylesheet" href="src/css/styles-proyect.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <!-- Topbar con sesión -->
+  <header class="topbar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <h2>📊 Dashboard - Urbanshop</h2>
+    <div id="session-info" class="session-info" style="font-size:14px; color:#374151;">
+      <!-- Aquí se mostrará el usuario y rol -->
+    </div>
+  </header>
+
+  <div class="container">
+    <aside>
+      <h2>🧭 Menú</h2>
+    <nav>
+        <a href="dashboard.html" class="menu-item" data-required-role="admin,supervisor,vendedor,usuario">📊 Dashboard</a>
+        <a href="inventory.html" class="menu-item" data-required-role="admin,supervisor,vendedor">📦 Inventario</a>
+        <a href="users.html" class="menu-item" data-required-role="admin">👥 Usuarios</a>
+        <a href="reports.html" class="menu-item" data-required-role="admin,supervisor">📈 Reportes</a>
+        <button id="logoutBtn" class="btn-logout">⏻ Cerrar sesión</button>
+    </nav>
+      <div class="helper">Sistema Urbanshop</div>
+    </aside>
+
+    <div class="main-content">
+      <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <strong style="font-size:1.5rem;">Panel de Control</strong>
+        <div class="toolbar">
+          <button id="refreshBtn" class="primary">🔄 Actualizar</button>
+        </div>
+      </header>
+
+      <main class="main">
+        <!-- 🔥 KPIs Cards Mejoradas -->
+        <section class="kpi-section" style="margin-bottom:24px;">
+          <div class="grid grid-3">
+            <div class="card kpi-card" style="background:linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="font-size:2rem;">💰</div>
+                <div>
+                  <strong style="display:block; color:#374151; font-size:0.9rem;">Ventas del Día</strong>
+                  <span id="kpi-sales" style="font-size:1.8rem; font-weight:700; color:#1e40af;">S/ 0.00</span>
+                  <div id="kpi-sales-count" style="font-size:0.8rem; color:#6b7280;">0 ventas</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card kpi-card" style="background:linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="font-size:2rem;">📦</div>
+                <div>
+                  <strong style="display:block; color:#374151; font-size:0.9rem;">Stock Total</strong>
+                  <span id="kpi-stock" style="font-size:1.8rem; font-weight:700; color:#166534;">0 ítems</span>
+                  <div id="kpi-products-count" style="font-size:0.8rem; color:#6b7280;">0 productos</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card kpi-card" style="background:linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="font-size:2rem;">⚠️</div>
+                <div>
+                  <strong style="display:block; color:#374151; font-size:0.9rem;">Alertas Stock</strong>
+                  <span id="kpi-alerts" style="font-size:1.8rem; font-weight:700; color:#d97706;">0 productos</span>
+                  <div style="font-size:0.8rem; color:#6b7280;">Bajo stock</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 📈 Gráficos en Grid -->
+        <section class="charts-section" style="margin-bottom:24px;">
+          <div class="grid grid-2">
+            <div class="card">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+                <span style="font-size:1.2rem;">📈</span>
+                <strong>Tendencia de Ventas (30 días)</strong>
+              </div>
+              <canvas id="chart-sales-trend" height="250"></canvas>
+            </div>
+
+            <div class="card">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+                <span style="font-size:1.2rem;">🏆</span>
+                <strong>Productos Más Vendidos</strong>
+              </div>
+              <canvas id="chart-top-products" height="250"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- 📋 Tablas de Información -->
+        <section class="tables-section">
+          <div class="grid grid-2">
+            <!-- Productos con bajo stock -->
+            <div class="card">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+                <span style="font-size:1.2rem;">⚠️</span>
+                <strong>Productos con Bajo Stock</strong>
+              </div>
+              <div class="table-wrap">
+                <table id="table-low-stock" style="width:100%;">
+                  <thead>
+                    <tr style="background:#f8fafc;">
+                      <th style="padding:12px; text-align:left; font-weight:600;">Producto</th>
+                      <th style="padding:12px; text-align:left; font-weight:600;">Categoría</th>
+                      <th style="padding:12px; text-align:center; font-weight:600;">Stock</th>
+                      <th style="padding:12px; text-align:right; font-weight:600;">Precio</th>
+                    </tr>
+                  </thead>
+                  <tbody id="low-stock-body">
+                    <tr>
+                      <td colspan="4" style="padding:20px; text-align:center; color:#6b7280;">
+                        Cargando productos...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Últimas ventas -->
+            <div class="card">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+                <span style="font-size:1.2rem;">💳</span>
+                <strong>Últimas Ventas</strong>
+              </div>
+              <div class="table-wrap">
+                <table id="table-recent-sales" style="width:100%;">
+                  <thead>
+                    <tr style="background:#f8fafc;">
+                      <th style="padding:12px; text-align:left; font-weight:600;"># Venta</th>
+                      <th style="padding:12px; text-align:left; font-weight:600;">Fecha</th>
+                      <th style="padding:12px; text-align:right; font-weight:600;">Total</th>
+                      <th style="padding:12px; text-align:center; font-weight:600;">Items</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-sales-body">
+                    <tr>
+                      <td colspan="4" style="padding:20px; text-align:center; color:#6b7280;">
+                        Cargando ventas...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="src/js/auth.js"></script>
+  <script src="src/js/dashboard.js"></script>
+
+</body>
+</html>

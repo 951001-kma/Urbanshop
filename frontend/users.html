@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios • Urbanshop</title>
+    <link rel="stylesheet" href="src/css/styles-proyect.css">
+</head>
+
+<body>
+  <!-- Topbar con sesión -->
+  <header class="topbar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <h2>👥 Gestión de Usuarios - Urbanshop</h2>
+    <div id="session-info" class="session-info" style="font-size:14px; color:#374151;">
+      <!-- Se completa por JavaScript -->
+    </div>
+  </header>
+
+  <div class="container">
+    <aside>
+      <h2>🧭 Menú</h2>
+    <nav>
+        <a href="dashboard.html" class="menu-item" data-required-role="admin,supervisor,vendedor,usuario">📊 Dashboard</a>
+        <a href="inventory.html" class="menu-item" data-required-role="admin,supervisor,vendedor">📦 Inventario</a>
+        <a href="users.html" class="menu-item" data-required-role="admin">👥 Usuarios</a>
+        <a href="reports.html" class="menu-item" data-required-role="admin,supervisor">📈 Reportes</a>
+        <button id="logoutBtn" class="btn-logout">⏻ Cerrar sesión</button>
+    </nav>
+      <div class="helper">Sistema Urbanshop</div>
+    </aside>
+
+    <div class="main-content">
+      <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <strong style="font-size:1.5rem;">Administración de Usuarios</strong>
+        <div class="toolbar">
+          <button id="refreshBtn" class="primary">🔄 Actualizar</button>
+        </div>
+      </header>
+
+      <main class="main">
+        <!-- Barra de herramientas -->
+        <div class="toolbar" style="margin-bottom:20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <input id="user-search" class="search" placeholder="Buscar por nombre o email..." style="flex:1; min-width:300px;"/>
+          <button id="btn-new-user" class="primary">➕ Agregar Usuario</button>
+          <button id="export-users" class="ghost">📊 Exportar CSV</button>
+        </div>
+
+        <!-- Tarjeta de estadísticas -->
+        <div class="grid grid-3" style="margin-bottom:20px;">
+          <div class="card kpi-card" style="background:linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="font-size:2rem;">👥</div>
+              <div>
+                <strong style="display:block; color:#374151; font-size:0.9rem;">Total Usuarios</strong>
+                <span id="kpi-total-users" style="font-size:1.8rem; font-weight:700; color:#1e40af;">0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card kpi-card" style="background:linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="font-size:2rem;">✅</div>
+              <div>
+                <strong style="display:block; color:#374151; font-size:0.9rem;">Activos</strong>
+                <span id="kpi-active-users" style="font-size:1.8rem; font-weight:700; color:#166534;">0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card kpi-card" style="background:linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="font-size:2rem;">⏸️</div>
+              <div>
+                <strong style="display:block; color:#374151; font-size:0.9rem;">Inactivos</strong>
+                <span id="kpi-inactive-users" style="font-size:1.8rem; font-weight:700; color:#d97706;">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla de usuarios -->
+        <div class="card">
+          <div class="table-wrap">
+            <table style="width:100%;">
+              <thead>
+                <tr style="background:#f8fafc;">
+                  <th style="padding:12px; text-align:left; font-weight:600;">Nombre</th>
+                  <th style="padding:12px; text-align:left; font-weight:600;">Email</th>
+                  <th style="padding:12px; text-align:left; font-weight:600;">Rol</th>
+                  <th style="padding:12px; text-align:center; font-weight:600;">Estado</th>
+                  <th style="padding:12px; text-align:center; font-weight:600;">Registro</th>
+                  <th style="padding:12px; text-align:center; font-weight:600;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody">
+                <tr>
+                  <td colspan="6" style="padding:20px; text-align:center; color:#6b7280;">
+                    Cargando usuarios...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Paginación -->
+          <div id="pagination" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding:12px; border-top:1px solid #e5e7eb;">
+            <div id="page-info" style="color:#6b7280; font-size:0.9rem;">
+              Mostrando 0 usuarios
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button id="prev-page" class="ghost" disabled>← Anterior</button>
+              <button id="next-page" class="ghost" disabled>Siguiente →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal para agregar/editar usuario -->
+        <div id="modal-user" class="modal">
+          <div class="panel" style="max-width:500px;">
+            <h3 id="modal-title">➕ Agregar Usuario</h3>
+            <form id="form-user">
+              <input type="hidden" name="id"/>
+              
+              <div style="display:grid; gap:16px;">
+                <div>
+                  <label style="display:block; margin-bottom:4px; font-weight:600;">Nombre Completo *</label>
+                  <input type="text" name="name" required style="width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px;"
+                         placeholder="Nombre y Apellidos"/>
+                </div>
+                
+                <div>
+                  <label style="display:block; margin-bottom:4px; font-weight:600;">Email *</label>
+                  <input type="email" name="email" required style="width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px;"
+                         placeholder="usuario@ejemplo.com"/>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <div>
+                    <label style="display:block; margin-bottom:4px; font-weight:600;">Rol *</label>
+                    <select name="role" required style="width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px;">
+                      <option value="">Seleccionar rol</option>
+                      <option value="Admin">Administrador</option>
+                      <option value="Supervisor">Supervisor</option>
+                      <option value="Vendedor">Vendedor</option>
+                      <option value="Usuario">Usuario</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label style="display:block; margin-bottom:4px; font-weight:600;">Estado *</label>
+                    <select name="status" required style="width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px;">
+                      <option value="Activo">Activo</option>
+                      <option value="Inactivo">Inactivo</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div id="password-fields">
+                  <div>
+                    <label style="display:block; margin-bottom:4px; font-weight:600;">Contraseña *</label>
+                    <input type="password" name="password" required style="width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px;"
+                           placeholder="Mínimo 6 caracteres" minlength="6"/>
+                  </div>
+                  
+                  <div>
+                    <label style="display:block; margin-bottom:4px; font-weight:600;">Confirmar Contraseña *</label>
+                    <input type="password" name="confirmPassword" required style="width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px;"
+                           placeholder="Repetir contraseña" minlength="6"/>
+                  </div>
+                </div>
+
+                <div id="password-note" style="display:none;">
+                  <div style="background:#f3f4f6; padding:8px 12px; border-radius:6px; font-size:0.9rem; color:#6b7280;">
+                    🔒 Dejar en blanco para mantener la contraseña actual
+                  </div>
+                </div>
+              </div>
+              
+              <footer style="display:flex; gap:8px; justify-content:flex-end; margin-top:20px;">
+                <button type="button" class="ghost" onclick="usersManager.closeModal()">Cancelar</button>
+                <button type="submit" class="primary">💾 Guardar Usuario</button>
+              </footer>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="src/js/auth.js"></script>
+  <script src="src/js/users.js"></script>
+
+</body>
+</html>

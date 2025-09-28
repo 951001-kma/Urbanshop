@@ -1,0 +1,95 @@
+:root{
+  --primary:#0f172a; 
+  --accent:#2563eb;  
+  --muted:#f1f5f9;   
+  --bg:#ffffff; 
+  --text:#0b1220; 
+  --ring:#cbd5e1; 
+  --danger:#dc2626; 
+  --ok:#16a34a;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;color:var(--text);background:var(--muted)}
+
+a{color:inherit;text-decoration:none}
+
+.container{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+aside{background:var(--primary);color:#e2e8f0;padding:16px;position:sticky;top:0;height:100vh}
+aside h2{font-size:18px;margin:0 0 8px}
+nav a{display:block;padding:10px 12px;border-radius:12px;color:#e2e8f0;margin:4px 0}
+nav a.active, nav a:hover{background:rgba(255,255,255,.12)}
+
+header{background:var(--bg);border-bottom:1px solid var(--ring);padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+.main{padding:24px}
+
+.card{background:var(--bg);border:1px solid var(--ring);border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.03);margin-bottom:16px}
+
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:1fr 1fr}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+
+input,select,button{border:1px solid var(--ring);border-radius:12px;padding:10px 12px;background:#fff}
+button.primary{background:var(--accent);color:#fff;border-color:transparent}
+button.ghost{background:transparent}
+button.danger{background:var(--danger);color:#fff;border-color:transparent}
+
+.badge{padding:.15rem .5rem;border-radius:999px;border:1px solid var(--ring);background:var(--muted);font-size:12px}
+.badge.ok{border-color:transparent;background:#d1fae5;color:#065f46}
+
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}
+th,td{padding:10px 12px;border-bottom:1px solid var(--ring);text-align:left;white-space:nowrap}
+thead th{background:var(--muted);font-weight:600}
+
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search{flex:1;min-width:220px}
+.helper{color:#64748b;font-size:14px}
+
+/* login */
+.login-wrap{max-width:360px;margin:8vh auto;background:#fff;border:1px solid var(--ring);padding:24px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+
+footer{padding:16px;text-align:center;color:#64748b}
+
+/* modal */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.5);padding:24px}
+.modal.open{display:flex}
+.modal .panel{background:#fff;border-radius:16px;border:1px solid var(--ring);min-width:320px;max-width:560px;width:100%;padding:16px}
+.modal .panel h3{margin-top:0}
+.modal .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal .row > div{display:flex;flex-direction:column;gap:6px}
+.modal footer{display:flex;gap:8px;justify-content:flex-end}
+
+canvas.chart{width:100%;height:220px;border:1px dashed var(--ring);border-radius:12px}
+
+input:invalid{ outline: 2px solid #fecaca; }
+
+
+.topbar {
+  background: #f9fafb;
+  padding: 8px 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.session-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.session-info button:hover {
+  background: #dc2626;
+}
+
+/* Ajustar altura específica para gráficos más pequeños */
+.chart-container {
+    position: relative;
+    height: 250px; /* Altura fija */
+    min-height: 200px;
+}
+
+/* O específicamente para el gráfico de horas */
+#chart-sales-by-hour {
+    height: 200px !important;
+    min-height: 180px;
+}
